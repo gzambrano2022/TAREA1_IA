@@ -28,4 +28,8 @@ class AgenteLRTA:
         return self.pos
 
     def meta_alcanzada(self):
-        return self.pos == self.meta
+        ax, ay = self.pos
+        mx, my = self.meta
+        # Retorna True si está en la meta o en una celda adyacente
+        return (ax, ay) == (mx, my) or abs(ax - mx) + abs(ay - my) == 1
+

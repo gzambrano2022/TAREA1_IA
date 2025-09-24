@@ -24,6 +24,10 @@ if __name__ == "__main__":
     while not agente.meta_alcanzada():
         nueva_pos = agente.mover()
         laberinto.establecer_posicion_agente(nueva_pos)
+
+        # Debug: mostrar coordenadas del agente y de la salida
+        print(f"🔹 Agente en: {nueva_pos}, Salida válida en: {laberinto.salida_valida}")
+
         laberinto.imprimir_laberinto()
         time.sleep(0.5)
 
