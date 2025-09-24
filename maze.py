@@ -6,23 +6,15 @@ import os
 from typing import List, Tuple, Dict, Callable, Optional
 from threading import Thread, Lock
 from datetime import datetime
+from kruskal import generar_kruskal
 
-
+# Clase que implementa el laberinto con cambios dinamicos
 class Laberinto:
     def __init__(self, tamaño: int, nodo_inicio: Tuple[int, int] = None,
                  intervalo_base: float = 2.0, auto_visualizar: bool = True,
                  num_salidas: int = 3):
-        """
-        Laberinto dinámico con actualización por tiempo basada en pesos
 
-        Args:
-            tamaño: Tamaño de la grid (debe ser impar)
-            nodo_inicio: Tupla (x, y) donde empezará el agente
-            intervalo_base: Intervalo base en segundos para actualizaciones
-            auto_visualizar: Si True, mostrará automáticamente los cambios
-            num_salidas: Número total de salidas (k salidas, solo 1 válida)
-        """
-        # Configuración básica
+        # Config inicial / Tamaño / Coords iniciales / Intervalo de modificacion / Visualizador de cambios/ Numero de salidas
         self.tamaño = tamaño if tamaño % 2 == 1 else tamaño + 1
         self.nodo_inicio = nodo_inicio if nodo_inicio else (1, 1)
         self.intervalo_base = intervalo_base
@@ -432,33 +424,11 @@ class Laberinto:
         self.callback_actualizacion = callback
 
     def generar_completamente(self):
-        """Genera el laberinto completo usando algoritmo de Kruskal"""
         with self.lock_grid:
-            # Crear árbol de expansión mínima usando pesos probabilísticos
-            self.arbol_kruskal = nx.minimum_spanning_tree(self.grafo, weight='weight')
-
-            for u, v in self.arbol_kruskal.edges():
-                x1, y1 = u
-                x2, y2 = v
-
-                # Convertir nodos y pared intermedia a camino
-                self.grid[y1, x1] = 0
-                self.grid[y2, x2] = 0
-
-                pared_x = (x1 + x2) // 2
-                pared_y = (y1 + y2) // 2
-                self.grid[pared_y, pared_x] = 0
-
-                # Asignar pesos de probabilidad
-                peso = self.grafo[u][v]['weight']
-                self.pesos_probabilidad[y1, x1] = peso
-                self.pesos_probabilidad[y2, x2] = peso
-                self.pesos_probabilidad[pared_y, pared_x] = peso
-
-            # Guardar copia para detectar cambios
+            self.arbol_kruskal, self.grid, self.pesos_probabilidad = generar_kruskal(
+                self.grafo, self.grid, self.pesos_probabilidad
+            )
             self.grid_anterior = self.grid.copy()
-
-            # Asegurar que las salidas permanezcan abiertas
             self._mantener_salidas_abiertas()
 
         self.generacion_completada = True
