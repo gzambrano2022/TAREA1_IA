@@ -751,6 +751,10 @@ class LaberintoDinamicoTemporal:
             destacar_cambios: Set de posiciones (x, y) para destacar
             usar_colores: Si usar códigos de color ANSI
         """
+        # Si no se pasa posición, usar la posición actual del agente
+        if posicion_agente is None:
+            posicion_agente = self.posicion_agente
+
         # Códigos de color ANSI
         RESET = '\033[0m' if usar_colores else ''
         RED = '\033[91m' if usar_colores else ''
