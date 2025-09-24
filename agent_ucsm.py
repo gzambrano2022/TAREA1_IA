@@ -56,7 +56,6 @@ class A_UCS:
                 objetivo, self.ruta = min(rutas_posibles, key=lambda t: len(t[1]))
             else:
                 # Todas las rutas bloqueadas, el agente se queda en su posición
-                print("❌ Todas las rutas bloqueadas temporalmente, esperando...")
                 self.ruta = []
                 return self.pos
 
