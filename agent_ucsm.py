@@ -47,18 +47,26 @@ class A_UCS:
 
     # Funcion que realiza un movimiento del agente
     def mover(self) -> Optional[Tuple[int, int]]:
-        # Replanifica si no hay ruta o está bloqueada
-        if not self.ruta or (self.ruta and self.lab.grid[self.ruta[0][1], self.ruta[0][0]] == 1):
-            # Buscar salida ms cercana
-            objetivo = min(self.salidas, key=lambda s: abs(s[0] - self.pos[0]) + abs(s[1] - self.pos[1]))
-            self.ruta = self._ucs(objetivo)
+        # Replanificar si no hay ruta o si alguna celda de la ruta está bloqueada
+        if not self.ruta or any(self.lab.grid[y, x] == 1 for x, y in self.ruta):
+            # Intentar todas las salidas disponibles
+            rutas_posibles = [(s, self._ucs(s)) for s in self.salidas]
+            rutas_posibles = [(s, r) for s, r in rutas_posibles if r]  # solo rutas válidas
+            if rutas_posibles:
+                objetivo, self.ruta = min(rutas_posibles, key=lambda t: len(t[1]))
+            else:
+                # Todas las rutas bloqueadas, el agente se queda en su posición
+                print("❌ Todas las rutas bloqueadas temporalmente, esperando...")
+                self.ruta = []
+                return self.pos
 
-        # Realiza el siguiente movimiento
+        # Mover al siguiente paso
         if self.ruta:
             self.pos = self.ruta.pop(0)
             self.pasos += 1
             return self.pos
-        return None
+
+        return self.pos
 
     # Verifica si el agente llego al objetivo (Salida real)
     def meta_alcanzada(self) -> bool:
