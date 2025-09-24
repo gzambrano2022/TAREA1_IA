@@ -1,4 +1,3 @@
-# main_lrta.py
 from maze import LaberintoDinamicoTemporal
 from agent_lrta import AgenteLRTA
 import time
@@ -21,14 +20,21 @@ if __name__ == "__main__":
 
     print("\n🚀 Simulación del agente LRTA* hacia la salida válida...")
 
-    while not agente.meta_alcanzada():
-        nueva_pos = agente.mover()
-        laberinto.establecer_posicion_agente(nueva_pos)
+    # Iniciar cambios automáticos de murallas
+    laberinto.iniciar_actualizacion_temporal()
 
-        # Debug: mostrar coordenadas del agente y de la salida
-        print(f"🔹 Agente en: {nueva_pos}, Salida válida en: {laberinto.salida_valida}")
+    try:
+        while not agente.meta_alcanzada():
+            nueva_pos = agente.mover()
+            laberinto.establecer_posicion_agente(nueva_pos)
 
-        laberinto.imprimir_laberinto()
-        time.sleep(0.5)
+            # Mostrar coordenadas del agente y de la salida
+            print(f"🔹 Agente en: {nueva_pos}, Salida válida en: {laberinto.salida_valida}")
 
-    print("\n🎉 El agente alcanzó la salida válida!")
+            laberinto.imprimir_laberinto()
+            time.sleep(0.5)
+
+        print("\n🎉 El agente alcanzó la salida válida!")
+    finally:
+        # Detener la actualización temporal
+        laberinto.detener_actualizacion_temporal()
