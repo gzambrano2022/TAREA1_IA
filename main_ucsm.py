@@ -2,11 +2,9 @@ from maze import Laberinto
 from agent_ucsm import A_UCS
 import time
 
+if __name__ == "__main__":
 
-def ejecutar_simulacion():
-    """Ejecuta una simulación con UCS y mapeo dinámico"""
-
-    # Crear laberinto
+    # Inicializar laberinto
     laberinto = Laberinto(
         tamaño=25,
         nodo_inicio=(1, 1),
@@ -17,7 +15,7 @@ def ejecutar_simulacion():
     laberinto.generar_completamente()
     laberinto.establecer_posicion_agente((1, 1))
 
-    # Crear agente
+    # Inicializar agente
     agente = A_UCS(laberinto, inicio=(1, 1))
 
     print("Estado inicial del laberinto:")
@@ -55,9 +53,9 @@ def ejecutar_simulacion():
         # Resultados
         print("\n=== RESULTADOS ===")
         if agente.meta_alcanzada():
-            print("ÉXITO: Agente encontró la salida válida")
+            print("EXITO: Agente encontro la salida valida")
         else:
-            print("FALLO: Agente no encontró la salida")
+            print("FALLO: Agente no encontro la salida")
 
         print(f"Pasos totales: {agente.pasos}")
         print(f"Tiempo: {tiempo_total:.2f} segundos")
@@ -66,16 +64,5 @@ def ejecutar_simulacion():
 
         laberinto.imprimir_laberinto()
 
-        return {
-            'exito': agente.meta_alcanzada(),
-            'pasos': agente.pasos,
-            'tiempo': tiempo_total
-        }
-
     finally:
         laberinto.detener_actualizacion_temporal()
-
-
-if __name__ == "__main__":
-    print("Ejecutando simulación: UCS con Mapeo Dinámico...")
-    resultado = ejecutar_simulacion()
