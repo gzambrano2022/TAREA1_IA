@@ -6,27 +6,21 @@ if __name__ == "__main__":
 
     # Inicializar laberinto
     laberinto = Laberinto(
-        tamaño=25,
+        tamaño=15,
         nodo_inicio=(1, 1),
         intervalo_base=10.0,
         auto_visualizar=False,
         num_salidas=3
     )
     laberinto.generar_completamente()
-    laberinto.establecer_posicion_agente((1, 1))
 
     # Inicializar agente
-    agente = A_UCS(laberinto, inicio=(1, 1))
-
-    print("Estado inicial del laberinto:")
-    print(f"Salidas: {laberinto.salidas}")
-    print(f"Salida válida: {laberinto.salida_valida}")
+    agente = A_UCS(laberinto, 1,1)
     laberinto.imprimir_laberinto()
 
-    # Iniciar simulación
+    # Iniciar simulacion
     laberinto.iniciar_actualizacion_temporal()
 
-    inicio_tiempo = time.time()
     max_pasos = 500
 
     try:
@@ -34,33 +28,19 @@ if __name__ == "__main__":
             nueva_pos = agente.mover()
 
             if nueva_pos is None:
-                print("Agente sin rutas disponibles")
+                print("Sin rutas disponibles")
                 break
-
+            # Nueva posicion y reimpresion del laberinto en terminal
             laberinto.establecer_posicion_agente(nueva_pos)
-
-            # Mostrar cada paso
-            print(f"\n--- Paso {agente.pasos} ---")
-            print(f"Agente en: {nueva_pos}")
-            print(f"Salidas restantes: {agente.salidas}")
-            print(f"Pasos en ruta actual: {len(agente.ruta)}")
+            print("\n")
             laberinto.imprimir_laberinto()
-
             time.sleep(1.0)
 
-        tiempo_total = time.time() - inicio_tiempo
-
         # Resultados
-        print("\n=== RESULTADOS ===")
         if agente.meta_alcanzada():
             print("EXITO: Agente encontro la salida valida")
         else:
             print("FALLO: Agente no encontro la salida")
-
-        print(f"Pasos totales: {agente.pasos}")
-        print(f"Tiempo: {tiempo_total:.2f} segundos")
-        print(f"Posición final: {agente.pos}")
-        print(f"Salidas exploradas: {3 - len(agente.salidas)}/3")
 
         laberinto.imprimir_laberinto()
 

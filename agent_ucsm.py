@@ -5,11 +5,11 @@ from heapq import heappush, heappop
 class A_UCS:
 
     # Constructor del agente
-    def __init__(self, laberinto, inicio: Tuple[int, int]):
+    def __init__(self, laberinto, xi, yi,):
         # Instancia del laberinto
         self.lab = laberinto
         # Coordenadas de inicio del agente
-        self.pos = inicio
+        self.pos = (xi, yi)
         # Lista de posibles salidas
         self.salidas = list(self.lab.salidas)
         # Ruta hacia el objetivo
@@ -18,13 +18,12 @@ class A_UCS:
         self.pasos = 0
 
     # Funcion que encuentra el camino mas corto desde la posicion actual hasta el la posicion objetivo
-    def _ucs(self, objetivo: Tuple[int, int]) -> List[Tuple[int, int]]:
-        """Busca camino con UCS"""
+    def ucs(self, xo,yo):
         grid = self.lab.grid
+        objetivo = (xo,yo)
         cola = [(0, self.pos, [])]
         visitados = set()
 
-        #
         while cola:
             costo, pos, camino = heappop(cola)
             if pos in visitados:
@@ -32,25 +31,24 @@ class A_UCS:
             visitados.add(pos)
 
             # Si se llega al obj se retorna el camino
-            if pos == objetivo:
+            if pos==objetivo:
                 return camino
 
             x, y = pos
 
-            # Explora los vecinos
-            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            # Explora los vecinos y añade si la
+            for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
                 nx, ny = x + dx, y + dy
-                if (0 <= nx < self.lab.tamaño and 0 <= ny < self.lab.tamaño and
-                        grid[ny, nx] == 0 and (nx, ny) not in visitados):
+                if (0 <= nx < self.lab.tamaño and 0 <= ny < self.lab.tamaño and grid[ny, nx] == 0 and (nx, ny) not in visitados):
                     heappush(cola, (costo + 1, (nx, ny), camino + [(nx, ny)]))
         return []
 
     # Funcion que realiza un movimiento del agente
-    def mover(self) -> Optional[Tuple[int, int]]:
+    def mover(self):
         # Replanificar si no hay ruta o si alguna celda de la ruta está bloqueada
         if not self.ruta or any(self.lab.grid[y, x] == 1 for x, y in self.ruta):
             # Intentar todas las salidas disponibles
-            rutas_posibles = [(s, self._ucs(s)) for s in self.salidas]
+            rutas_posibles = [(s, self.ucs(s[0],s[1])) for s in self.salidas]
             rutas_posibles = [(s, r) for s, r in rutas_posibles if r]  # solo rutas válidas
             if rutas_posibles:
                 objetivo, self.ruta = min(rutas_posibles, key=lambda t: len(t[1]))
@@ -76,7 +74,7 @@ class A_UCS:
 
         # Si no, o es falsa False
         elif self.pos in self.salidas:
-            print(f"Salida falsa en {self.pos}, buscando otra...")
+            print(f"Salida falsa, busca otra")
             self.salidas.remove(self.pos)
             self.ruta = []
             return False
