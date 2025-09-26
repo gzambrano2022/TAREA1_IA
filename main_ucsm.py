@@ -6,10 +6,10 @@ if __name__ == "__main__":
 
     # Inicializar laberinto
     laberinto = Laberinto(
-        tamaño=15,
-        nodo_inicio=(1, 1),
-        intervalo_base=10.0,
-        auto_visualizar=False,
+        tamaño=20,
+        x_i=1,
+        y_i=1,
+        intervalo=10.0,
         num_salidas=3
     )
     laberinto.generar_completamente()
@@ -31,7 +31,7 @@ if __name__ == "__main__":
                 print("Sin rutas disponibles")
                 break
             # Nueva posicion y reimpresion del laberinto en terminal
-            laberinto.establecer_posicion_agente(nueva_pos)
+            laberinto.establecer_posicion_agente(nueva_pos[0],nueva_pos[1])
             print("\n")
             laberinto.imprimir_laberinto()
             time.sleep(1.0)

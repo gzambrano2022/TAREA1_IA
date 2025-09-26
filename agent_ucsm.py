@@ -1,4 +1,3 @@
-from typing import Tuple, List, Optional
 from heapq import heappush, heappop
 
 # Clase que implementa agente que utiliza busqueda de costo uniforme con un mapa dinamico
@@ -45,28 +44,30 @@ class A_UCS:
 
     # Funcion que realiza un movimiento del agente
     def mover(self):
+
         # Replanificar si no hay ruta o si alguna celda de la ruta está bloqueada
         if not self.ruta or any(self.lab.grid[y, x] == 1 for x, y in self.ruta):
+
             # Intentar todas las salidas disponibles
             rutas_posibles = [(s, self.ucs(s[0],s[1])) for s in self.salidas]
             rutas_posibles = [(s, r) for s, r in rutas_posibles if r]  # solo rutas válidas
+
             if rutas_posibles:
                 objetivo, self.ruta = min(rutas_posibles, key=lambda t: len(t[1]))
+
             else:
                 # Todas las rutas bloqueadas, el agente se queda en su posición
                 self.ruta = []
-                return self.pos
 
         # Mover al siguiente paso
         if self.ruta:
             self.pos = self.ruta.pop(0)
             self.pasos += 1
-            return self.pos
 
         return self.pos
 
     # Verifica si el agente llego al objetivo (Salida real)
-    def meta_alcanzada(self) -> bool:
+    def meta_alcanzada(self):
 
         # Si llega es True
         if self.pos == self.lab.salida_valida:
