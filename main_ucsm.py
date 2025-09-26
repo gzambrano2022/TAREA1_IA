@@ -1,16 +1,17 @@
-from maze import Laberinto
+from laberinto import Laberinto
 from agent_ucsm import A_UCS
 import time
+import random
 
 if __name__ == "__main__":
 
     # Inicializar laberinto
     laberinto = Laberinto(
-        tamaño=20,
+        tamaño=10,
         x_i=1,
         y_i=1,
         intervalo=10.0,
-        num_salidas=3
+        num_salidas= random.randint(1,100)
     )
     laberinto.generar_completamente()
 

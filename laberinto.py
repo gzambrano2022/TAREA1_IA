@@ -2,7 +2,6 @@ import numpy as np
 import random
 import networkx as nx
 import time
-import os
 from threading import Thread, Lock
 from kruskal import generar_kruskal
 
@@ -57,7 +56,7 @@ class Laberinto:
             for dx, dy in direcciones:
                 vecino = (x + dx, y + dy)
                 if vecino in self.grafo.nodes():
-                    peso = self.calcular_peso_probabilidad(x, y, vecino[0], vecino[1])
+                    peso = random.uniform(0.05, 0.1)
                     self.grafo.add_edge(nodo, vecino, weight=peso)
 
         # Inicializar posición de inicio
@@ -65,13 +64,6 @@ class Laberinto:
         self.grid[y, x] = 0
         self.pesos_probabilidad[y, x] = 0.1
 
-    def calcular_peso_probabilidad(self, x1, y1, x2, y2):
-        """Calcula pesos basados en distancia al centro"""
-        centro = self.tamaño // 2
-        dist1 = abs(x1 - centro) + abs(y1 - centro)
-        dist2 = abs(x2 - centro) + abs(y2 - centro)
-        dist_promedio = (dist1 + dist2) / 2
-        return 0.1 + (dist_promedio / self.tamaño) * 0.8
 
     def generar_salidas(self):
         """Genera k salidas en los bordes, asigna una como válida"""
