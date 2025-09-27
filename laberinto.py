@@ -56,7 +56,7 @@ class Laberinto:
             for dx, dy in direcciones:
                 vecino = (x + dx, y + dy)
                 if vecino in self.grafo.nodes():
-                    peso = random.uniform(0.05, 0.1)
+                    peso = random.uniform(0.009, 0.1)
                     self.grafo.add_edge(nodo, vecino, weight=peso)
 
         # Inicializar posición de inicio
