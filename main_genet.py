@@ -1,4 +1,4 @@
-from maze import Laberinto
+from laberinto import Laberinto
 from agent_genet import A_GENET
 
 if __name__ == "__main__":
