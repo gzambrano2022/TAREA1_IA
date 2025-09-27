@@ -12,11 +12,11 @@ class A_GENET:
         # Arriba, abajo, izquierda y derecha
         self.movimientos=[(0,-1), (0,1),(-1,0), (1,0)]
         #Tamaño de la poblacion
-        self.pobla= 40
+        self.pobla= 100
         # Cantidad de cromosomas
         self.cromosoma = 50
         # Cantidad de generaciones
-        self.generacion =100
+        self.generacion =1000
 
     # Lista de movimientos aleatorios
     def crear_cromosoma(self):
@@ -56,9 +56,10 @@ class A_GENET:
             if (x, y) in self.lab.salidas_falsas:
                 errores += 5
             elif (x, y) == self.lab.salida_valida:
-                break
+                return errores
 
-        return errores
+        distancia = abs(x - self.lab.salida_valida[0]) + abs(y - self.lab.salida_valida[1])
+        return errores + distancia
 
     # Seleccion por torneo
     def seleccionar(self, poblacion):
@@ -108,8 +109,8 @@ class A_GENET:
                 # Cruce
                 hijo1, hijo2 = self.cruzar(padre1, padre2)
 
-                # Mutación con probabilidad (por ejemplo 20%)
-                if random.random() < 0.2:
+                # Mutacion con probabilidad
+                if random.random() < 0.3:
                     hijo1 = self.mutar(hijo1)
                 if random.random() < 0.2:
                     hijo2 = self.mutar(hijo2)
@@ -120,9 +121,14 @@ class A_GENET:
             # Limitar población a tamaño original
             poblacion = nueva_poblacion[:self.pobla]
 
-            # Opcional: mostrar mejor fitness de la generación
+            # Mostrar mejor fitness de la generacion
             mejor = min(poblacion, key=lambda c: self.fitness(c))
-            print(f"Generación {gen + 1}: Mejor fitness = {self.fitness(mejor)}")
+            mejor_fitness=self.fitness(mejor)
+            print(f"Generación {gen + 1}: Mejor fitness = {mejor_fitness}")
+
+            if mejor_fitness == 1:  # Tolerancia pequeña para errores mínimos
+                print(f"Solución encontrada en generación {gen + 1}")
+                break
 
         # Retornar mejor cromosoma encontrado
         mejor_final = min(poblacion, key=lambda c: self.fitness(c))
