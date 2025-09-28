@@ -7,11 +7,13 @@ import random
 if __name__ == "__main__":
 
     tamaño = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-    salidas = tamaño/3
+    salidas = tamaño // 3
+    cromosomas = tamaño*5
+    generacion= tamaño*10
 
     # Inicializar laberinto
     laberinto = Laberinto(
-        tamaño=10,
+        tamaño=tamaño,
         x_i=1,
         y_i=1,
         intervalo=10.0,
@@ -20,7 +22,7 @@ if __name__ == "__main__":
     laberinto.generar_completamente()
 
     # Inicializar agente genetico
-    agente = A_GENET(laberinto, 1, 1)
+    agente = A_GENET(laberinto, 1, 1,cromosomas,generacion)
     laberinto.imprimir_laberinto()
 
     # Iniciar simulacien

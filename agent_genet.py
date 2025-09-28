@@ -4,7 +4,7 @@ import random
 class A_GENET:
 
     # Constructor de la clase
-    def __init__(self,laberinto, xi, yi):
+    def __init__(self,laberinto, xi, yi,cromosomas,generacion):
         # Instancia del laberinto
         self.lab = laberinto
         # Coordenadas de inicio del agente
@@ -14,9 +14,9 @@ class A_GENET:
         #Tamaño de la poblacion
         self.pobla= 100
         # Cantidad de cromosomas
-        self.cromosoma = 50
+        self.cromosoma = cromosomas
         # Cantidad de generaciones
-        self.generacion =1000
+        self.generacion =generacion
 
     # Lista de movimientos aleatorios
     def crear_cromosoma(self):
