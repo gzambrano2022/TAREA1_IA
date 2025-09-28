@@ -7,7 +7,7 @@ import time
 if __name__ == "__main__":
 
     tamaño = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-    salidas = tamaño / 3
+    salidas = tamaño // 3
 
     # Inicializar laberinto
     laberinto = Laberinto(
