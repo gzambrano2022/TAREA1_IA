@@ -16,6 +16,7 @@ python3 -m venv venv
  ```
 
 2. Instalar dependecias
+   
 La única dependecia utilizada fue networkx, una libreria para manejar grafos.
 
  ```
