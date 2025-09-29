@@ -1,41 +1,58 @@
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 
-data = pd.read_csv("resultados.csv")
+# Archivos CSV
+gen_file = "genetico.csv"
+ucs_file = "ucs.csv"
 
-t_mean_sec = data["t_mean"] / 1e9
-t_stdev_sec = data["t_stdev"] / 1e9
+# Leer datos
+df_gen = pd.read_csv(gen_file)
+df_ucs = pd.read_csv(ucs_file)
 
-plt.errorbar(data["n"], t_mean_sec, t_stdev_sec, linestyle="None", marker='.', ecolor='tab:red')
-plt.xlabel("n")
-plt.ylabel("Tiempo medio [s]")
-plt.title("Rendimiento Agente UCS")
-plt.grid(True)
-plt.show()
+# Convertir tiempos de ns a segundos
+df_gen["t_mean"] = df_gen["t_mean"] / 1e9
+df_ucs["t_mean"] = df_ucs["t_mean"] / 1e9
 
-# Preparar datos para boxplot
-quartiles_data = [data["t_Q0"]/1e9, data["t_Q1"]/1e9,
-                  data["t_Q2"]/1e9, data["t_Q3"]/1e9, data["t_Q4"]/1e9]
-labels = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4']
+df_gen["t_stdev"] = df_gen["t_stdev"] / 1e9
+df_ucs["t_stdev"] = df_ucs["t_stdev"] / 1e9
 
-plt.figure(figsize=(10, 6))
-plt.boxplot(quartiles_data, labels=labels)
-plt.ylabel("Tiempo [s]")
-plt.title("Distribución de Tiempos por Cuartiles")
-plt.grid(True)
-plt.show()
+# Agrupar por n y calcular promedios
+gen_stats = df_gen.groupby("n").agg(
+    mean_time=("t_mean", "mean"),
+    std_time=("t_stdev", "mean"),
+    success_rate=("success_rate", "mean")
+).reset_index()
 
-plt.figure(figsize=(10, 6))
-plt.plot(data["n"], data["t_Q0"]/1e9, 'o-', label='Q0 (mínimo)')
-plt.plot(data["n"], data["t_Q1"]/1e9, 'o-', label='Q1 (25%)')
-plt.plot(data["n"], data["t_Q2"]/1e9, 'o-', label='Q2 (mediana)')
-plt.plot(data["n"], data["t_Q3"]/1e9, 'o-', label='Q3 (75%)')
-plt.plot(data["n"], data["t_Q4"]/1e9, 'o-', label='Q4 (máximo)')
-plt.plot(data["n"], t_mean_sec, 'k--', label='Media')
+ucs_stats = df_ucs.groupby("n").agg(
+    mean_time=("t_mean", "mean"),
+    std_time=("t_stdev", "mean"),
+    success_rate=("success_rate", "mean")
+).reset_index()
 
-plt.xlabel("n")
-plt.ylabel("Tiempo [s]")
-plt.title("Evolución de Cuartiles vs n")
+# ---- Gráfico 1: tiempo medio ----
+plt.figure(figsize=(8,5))
+plt.errorbar(gen_stats["n"], gen_stats["mean_time"], yerr=gen_stats["std_time"],
+             fmt="o-", capsize=5, label="Genético")
+plt.errorbar(ucs_stats["n"], ucs_stats["mean_time"], yerr=ucs_stats["std_time"],
+             fmt="s-", capsize=5, label="UCS")
+
+plt.xlabel("Tamaño del laberinto (n)")
+plt.ylabel("Tiempo medio (segundos)")
+plt.title("Tiempo medio de resolución")
 plt.legend()
 plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# ---- Gráfico 2: tasa de éxito ----
+plt.figure(figsize=(8,5))
+plt.plot(gen_stats["n"], gen_stats["success_rate"], marker="o", label="Genético")
+plt.plot(ucs_stats["n"], ucs_stats["success_rate"], marker="s", label="UCS")
+plt.xlabel("Tamaño del laberinto (n)")
+plt.ylabel("Tasa de éxito")
+plt.title("Comparación de éxito")
+plt.legend()
+plt.ylim(0, 1.05)
+plt.grid(True)
+plt.tight_layout()
 plt.show()

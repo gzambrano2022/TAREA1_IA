@@ -1,5 +1,5 @@
 import sys
-
+import time
 from laberinto import Laberinto
 from agent_genet import A_GENET
 import random
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     tamaño = int(sys.argv[1]) if len(sys.argv) > 1 else 10
     salidas = tamaño // 3
     cromosomas = tamaño*5
-    generacion= tamaño*10
+    generacion= tamaño*7
 
     # Inicializar laberinto
     laberinto = Laberinto(
@@ -34,9 +34,15 @@ if __name__ == "__main__":
     x, y = 1, 1
     pasos = 0
     exito = False
+    max_tiempo = 60.0
+    start_time = time.time()
 
     # Recorrer el cromosoma como si fueran pasos del agente
     for movimiento in mejor_cromosoma:
+
+        if time.time() - start_time > max_tiempo:
+            print("FALLO: Tiempo máximo excedido")
+            exit(1)  # Fallo
 
         dx, dy = movimiento
         nx, ny = x + dx, y + dy
